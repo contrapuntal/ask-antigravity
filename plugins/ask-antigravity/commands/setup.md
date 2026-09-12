@@ -30,7 +30,7 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/antigravity-companion.mjs" setup
 ```
 
 If the JSON result has `installed: true` and `authenticated: false`:
-- Tell the user to run `!agy` and complete sign-in (Google account or `ANTIGRAVITY_API_KEY`).
+- Tell the user to run `!agy` and complete sign-in (Google account).
 
 If the JSON result has `ready: true`:
 - Show a brief confirmation and mention `/ask-antigravity:review` and `/ask-antigravity:rescue` as the next things to try.

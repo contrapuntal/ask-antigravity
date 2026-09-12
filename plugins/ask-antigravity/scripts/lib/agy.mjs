@@ -57,16 +57,13 @@ export function detectAntigravity() {
   return { installed: true, version: probe.detail, supported: isSupportedVersion(probe.detail) };
 }
 
-// Best-effort auth probe. agy keeps OAuth credentials in the OS keyring, which we
-// cannot read here, so we cannot positively verify a signed-in session. We treat
-// an ANTIGRAVITY_API_KEY env var, or a populated agy config dir (evidence the user
-// has onboarded), as "authenticated" and let agy surface real auth errors at first
-// use. This deliberately avoids false negatives that would nag onboarded users;
+// Best-effort auth probe. agy manages OAuth credentials in the OS keyring and
+// ~/.gemini/antigravity-cli/, which cannot be directly verified without invoking agy.
+// We treat a populated agy config dir (evidence the CLI has initialized local state)
+// as "authenticated" and let agy surface real auth errors at first use.
+// This deliberately avoids false negatives that would nag onboarded users;
 // note the command paths gate on `installed`, not on this probe.
 export function detectAuth({ configDir = CONFIG_DIR } = {}) {
-  if (process.env.ANTIGRAVITY_API_KEY) {
-    return { authenticated: true, method: "api-key" };
-  }
   try {
     if (fs.existsSync(configDir) && fs.readdirSync(configDir).length > 0) {
       return { authenticated: true, method: "keyring" };

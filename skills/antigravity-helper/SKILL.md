@@ -15,7 +15,7 @@ This skill lets any Anthropic-Skill-aware agent (Codex CLI, OpenCode, Pi.dev, pl
 
 ## Prerequisites
 
-- **`agy` CLI 1.1.15+ for reviews; 1.0.7+ for task/setup, installed and authenticated.** Install with `curl -fsSL https://antigravity.google/cli/install.sh | bash` or `brew install --cask antigravity-cli` (agy is not distributed via npm). Older agy hangs in headless print mode; the companion refuses to invoke it and asks for an upgrade. Sign in by running `agy` interactively and completing Google sign-in, or set `ANTIGRAVITY_API_KEY` in the environment.
+- **`agy` CLI 1.1.15+ for reviews; 1.0.7+ for task/setup, installed and authenticated.** Install with `curl -fsSL https://antigravity.google/cli/install.sh | bash` or `brew install --cask antigravity-cli` (agy is not distributed via npm). Older agy hangs in headless print mode; the companion refuses to invoke it and asks for an upgrade. Sign in by running `agy` interactively and completing Google sign-in.
 - **`node` 18.18 or later** on PATH.
 - **`ANTIGRAVITY_CLI_PLUGIN_CC_ROOT` env var** pointing at the absolute path of the cloned `ask-antigravity` repository. If that variable is unset, ask the user for the path before running the companion.
 - **Workspace trust.** If `agy` has not been interactively trusted in the directory you invoke it from, trust the workspace in agy (it records `trustedWorkspaces` in its `settings.json`). Without trust, headless `agy` may refuse to proceed.

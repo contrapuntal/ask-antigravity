@@ -69,23 +69,20 @@ test("installHint returns curl and brew commands", () => {
   assert.match(hint.alternate, /brew install --cask antigravity-cli/);
 });
 
-test("detectAuth reports api-key when ANTIGRAVITY_API_KEY is set", () => {
-  const prev = process.env.ANTIGRAVITY_API_KEY;
-  process.env.ANTIGRAVITY_API_KEY = "secret";
+test("detectAuth does not treat an API-key variable alone as authentication evidence", () => {
+  const previous = process.env.ANTIGRAVITY_API_KEY;
+  process.env.ANTIGRAVITY_API_KEY = "test-only";
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "agy-no-auth-"));
   try {
-    assert.deepEqual(detectAuth({ configDir: "/no/such/dir" }), {
-      authenticated: true,
-      method: "api-key"
-    });
+    assert.deepEqual(detectAuth({ configDir: dir }), { authenticated: false });
   } finally {
-    if (prev === undefined) delete process.env.ANTIGRAVITY_API_KEY;
-    else process.env.ANTIGRAVITY_API_KEY = prev;
+    if (previous === undefined) delete process.env.ANTIGRAVITY_API_KEY;
+    else process.env.ANTIGRAVITY_API_KEY = previous;
+    fs.rmSync(dir, { recursive: true, force: true });
   }
 });
 
 test("detectAuth assumes keyring auth when the agy config dir is populated", () => {
-  const prev = process.env.ANTIGRAVITY_API_KEY;
-  delete process.env.ANTIGRAVITY_API_KEY;
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "agy-auth-"));
   fs.writeFileSync(path.join(dir, "installation_id"), "abc123");
   const emptyDir = fs.mkdtempSync(path.join(os.tmpdir(), "agy-empty-"));
@@ -94,7 +91,6 @@ test("detectAuth assumes keyring auth when the agy config dir is populated", () 
     assert.deepEqual(detectAuth({ configDir: emptyDir }), { authenticated: false });
     assert.deepEqual(detectAuth({ configDir: "/no/such/dir" }), { authenticated: false });
   } finally {
-    if (prev !== undefined) process.env.ANTIGRAVITY_API_KEY = prev;
     fs.rmSync(dir, { recursive: true, force: true });
     fs.rmSync(emptyDir, { recursive: true, force: true });
   }

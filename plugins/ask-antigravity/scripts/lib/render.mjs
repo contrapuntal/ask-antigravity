@@ -38,8 +38,7 @@ export function renderSetupText(state) {
 
   if (!state.auth.authenticated) {
     lines.push("");
-    lines.push("No authentication evidence found. Run agy and complete sign-in,");
-    lines.push("or set ANTIGRAVITY_API_KEY in your environment.");
+    lines.push("No authentication evidence found. Run agy interactively and complete sign-in.");
     return finish();
   }
 

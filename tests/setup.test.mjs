@@ -41,7 +41,7 @@ test("renderSetupText prompts for sign-in when unauthenticated", () => {
   const out = renderSetupText({ ...ready, auth: { authenticated: false } });
   assert.match(out, /No authentication evidence/);
   assert.match(out, /Run agy/);
-  assert.match(out, /ANTIGRAVITY_API_KEY/);
+  assert.match(out, /complete sign-in/);
 });
 
 test("renderSetupText says ready when installed, supported and authenticated", () => {

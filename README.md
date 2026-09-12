@@ -40,7 +40,7 @@ You need a working Antigravity CLI on your machine **before** installing this pl
 
 2. **Authenticate**
 
-   Run `agy` interactively once and sign in with your Google account, or set `ANTIGRAVITY_API_KEY` in your environment.
+   Run `agy` interactively once and sign in with your Google account.
 
    ```bash
    agy

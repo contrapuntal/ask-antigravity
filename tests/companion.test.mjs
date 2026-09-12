@@ -335,7 +335,12 @@ test("setup --live --json verifies a response without contaminating JSON", (t) =
 
 test("setup --live reports denied tools separately from heuristic auth", (t) => {
   const { env } = makeFakeAgy(t);
-  env.ANTIGRAVITY_API_KEY = "test-only";
+  const fakeHome = fs.mkdtempSync(path.join(os.tmpdir(), "agy-fake-home-"));
+  t.after(() => fs.rmSync(fakeHome, { recursive: true, force: true }));
+  const configDir = path.join(fakeHome, ".gemini", "antigravity-cli");
+  fs.mkdirSync(configDir, { recursive: true });
+  fs.writeFileSync(path.join(configDir, "installation_id"), "fake-id");
+  env.HOME = fakeHome;
   env.AGY_FAKE_EMPTY = DENIED_STDERR;
   const result = runCompanion(["setup", "--live", "--json"], env);
   assert.notEqual(result.status, 0);
