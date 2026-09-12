@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.1
 
 - Clarify observed Codex startup requirements, recommend the dedicated agy writable directory, and document configuration limits and live validation results
 - Add shared reactive hints for socket-binding and agy runtime-state access denials in task and review failures, preserving original diagnostics, exit behavior, and cleanup without automatic retries

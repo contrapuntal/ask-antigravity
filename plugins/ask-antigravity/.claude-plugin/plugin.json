@@ -1,6 +1,6 @@
 {
   "name": "ask-antigravity",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Use Antigravity from Claude Code to review code or delegate tasks.",
   "author": {
     "name": "ask-antigravity contributors"
