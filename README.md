@@ -104,7 +104,34 @@ Codex workflows run in the foreground. `--wait` selects that behavior; `--backgr
 
 Ordinary setup checks local installation and authentication evidence. `setup --live` explicitly makes a minimal model call from a temporary directory and may incur usage. With `--json`, `live.ok` and `live.detail` report the live result separately from the authentication heuristic; a failed live check exits nonzero.
 
-agy requires network access. OAuth token refresh may also need write access to `~/.gemini/antigravity-cli/`; an existing `ANTIGRAVITY_API_KEY` is inherited from the host environment. A populated configuration directory does not prove a valid session. Codex skills report denied access and respect the host approval policy; they do not change global permissions or automatically retry with broader access. Installation and interactive sign-in remain user-managed.
+agy needs outbound service access. In the recorded macOS headless validation, startup also needed localhost socket binding and writes under `~/.gemini/antigravity-cli/`; the restricted run failed on binding and log writes. The default CLI state tree includes logs and session metadata; crash output and OAuth credential writes may also need access there. This does not establish that every invocation writes every type of state. A populated directory alone does not prove valid authentication. See [validation evidence](docs/codex-validation.md).
+
+agy 1.2.2 exposes `--log-file` to override the CLI log path, but its coverage of engine logs, crashes, and other state has not been verified here. Do not assume log redirection or supplying an API key eliminates startup storage or listener requirements.
+
+For a **user-controlled Codex CLI session** using `workspace-write`, the following is a configuration starting point. Ensure the dedicated directory exists during user-managed installation/sign-in. Merge these settings into your existing `~/.codex/config.toml` table, preserving any other writable roots:
+
+```toml
+[sandbox_workspace_write]
+network_access = true
+writable_roots = ["/Users/<you>/.gemini/antigravity-cli"]
+```
+
+These grants apply to all sandboxed commands in the session. The directory grant includes agy settings and authentication-related state. Use the dedicated directory rather than its `~/.gemini` parent.
+
+For a single Codex CLI launch, pass the overrides explicitly (omit `exec` for an interactive session):
+
+```bash
+codex exec -s workspace-write \
+  --add-dir "/Users/<you>/.gemini/antigravity-cli" \
+  -c 'sandbox_workspace_write.network_access=true' \
+  "your prompt"
+```
+
+`network_access` enables outbound command networking; effective proxy rules, managed policies, and any enclosing sandbox can impose additional restrictions, including on local networking. A user-reported live test with these launch grants passed setup and static review on macOS 26.6.2, Codex CLI 0.154.0, and agy 1.2.2; see the [results and limits](docs/codex-validation.md#reactive-diagnostics-and-explicit-sandbox-grants-2026-09-12). This does not establish a complete remedy across Codex hosts. The CLI and IDE extension share configuration layers; use the host's permissions controls to check the effective policy. See the official [configuration guidance](https://learn.chatgpt.com/docs/config-file/config-basic) and [network policy guidance](https://learn.chatgpt.com/docs/agent-approvals-security).
+
+Start a fresh session after configuring access, then explicitly request the plugin's `setup --live` check inside that session to verify a model response (it may incur usage). A successful check in an ordinary terminal does not verify access inside Codex.
+
+Codex skills report denied access and respect the host approval policy; they do not change global permissions or automatically retry with broader access. Installation and interactive sign-in remain user-managed.
 
 ## Claude Code usage
 
@@ -256,7 +283,7 @@ ln -s "$ANTIGRAVITY_CLI_PLUGIN_CC_ROOT/skills/antigravity-helper" ~/.agents/skil
 # Pi.dev (consult its package docs for the right skills directory; or distribute as an npm package)
 ```
 
-Use the host's normal execution and approval policy. agy needs outbound network access, and OAuth refresh may require writing credentials under `~/.gemini/antigravity-cli/`. If either is blocked, report the actual diagnostic and configure access through the host's normal controls. Do not automatically broaden permissions. The native Codex skills use foreground execution only.
+Use the host's normal execution and approval policy. agy needs outbound service access. Recorded macOS headless startup also needed localhost socket binding and log writes under `~/.gemini/antigravity-cli/`; session state, crash output, and OAuth refresh may need additional writes in that tree. If required access is blocked, report the actual diagnostic and configure access through the host's normal controls. Do not automatically broaden permissions. The native Codex skills use foreground execution only.
 
 Once linked, the agent's model loads the skill on demand based on its description. Prerequisites match Claude Code: `agy` CLI installed and authenticated, `node` 18.18+ on PATH.
 

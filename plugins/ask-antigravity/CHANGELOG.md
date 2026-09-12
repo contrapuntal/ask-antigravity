@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Clarify observed Codex startup requirements, recommend the dedicated agy writable directory, and document configuration limits and live validation results
+
 ## 1.2.0
 
 - Rename the repository and display branding to Ask Antigravity; preserve plugin IDs, marketplace identity, and the portable helper environment variable

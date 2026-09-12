@@ -75,7 +75,7 @@ node "$ANTIGRAVITY_CLI_PLUGIN_CC_ROOT/plugins/ask-antigravity/scripts/antigravit
 
 Ordinary setup does not verify a working authenticated session. For an explicitly requested connectivity check, add `--live` (also supports `--json`); this makes a minimal model call and may incur usage. The JSON live result is reported in `live.ok` and `live.detail`, separately from the authentication heuristic, and a failed live check exits nonzero.
 
-agy requires network access; OAuth refresh may also need writes to `~/.gemini/antigravity-cli/`. Respect the host's filesystem/network policy and report missing access. Do not change global permissions or automatically retry with broader access. Use interactive sign-in outside the headless call when authentication is missing.
+agy needs outbound service access. Recorded macOS headless startup also needed localhost socket binding and log writes under `~/.gemini/antigravity-cli/`; session state, crash output, and OAuth refresh may need additional writes in that tree. Do not assume an API key or log redirection removes these requirements. Respect the host's filesystem/network policy and report missing access. Do not change global permissions or automatically retry with broader access. Use interactive sign-in outside the headless call when authentication is missing.
 
 If the result reports `installed: false`, suggest installing agy with `curl -fsSL https://antigravity.google/cli/install.sh | bash` or `brew install --cask antigravity-cli`. If `authenticated: false`, suggest running `agy` interactively to sign in.
 

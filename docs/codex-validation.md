@@ -56,3 +56,22 @@ The final companion invocation reviewed 14 modified and 10 untracked files with 
 - **Retained by design:** malformed stdout fails structured review parsing. Silently skipping corrupt protocol lines could conceal a failure; no real run required this relaxation.
 
 The model's raw NO-SHIP verdict was based on these findings; it is not adopted without verification. The complete response is saved in `docs/gemini-flash-review.md`.
+
+## Reactive diagnostics and explicit sandbox grants (2026-09-12)
+
+The user reported the following results from fresh Codex sessions on macOS 26.6.2 (25G83), Codex CLI 0.154.0, and agy 1.2.2. Both sessions used the checkout's `plugins/ask-antigravity/scripts/antigravity-companion.mjs`, rather than the installed plugin cache.
+
+- **Restricted session:** `setup --live --json` exited 1 with `ready: false` and `live.ok: false`. Original stderr reported denied log and crash-file opens under `~/.gemini/antigravity-cli/` and `listen tcp 127.0.0.1:0: bind: operation not permitted`. The shared hint correctly named both socket binding and access to agy runtime state, preserving the original diagnostics. Review was not run and no fixture was created. No retries or configuration changes occurred.
+- **Configured session:** Following the launch instructions below, live setup exited 0 with `ready: true`, `live.ok: true`, and “Live response verified.” Static review also exited 0 and identified `add.js:2` returning `a - b` as an arithmetic regression, recommending `a + b`. Neither successful call emitted a reactive hint. The disposable repository was removed and its absence verified; the test left the source checkout unchanged.
+
+The supplied launch instructions were:
+
+```bash
+codex -s workspace-write \
+  --add-dir "$HOME/.gemini/antigravity-cli" \
+  -c 'sandbox_workspace_write.network_access=true'
+```
+
+The separate `codex --version` command warned `could not create PATH aliases: Operation not permitted (os error 1)`. This warning did not prevent the reported setup and review successes; its cause was not investigated in these tests.
+
+These are user-reported live results for the source companion on the versions above. They do not establish installed-cache readiness, rescue tool permissions, behavior under other host policies, or the coverage of `--log-file` and alternate authentication modes. The failed invocation demonstrates actual log/crash write attempts and a local bind attempt; it does not prove every invocation performs those operations.
