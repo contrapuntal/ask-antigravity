@@ -4,6 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { captureCommand } from "./process.mjs";
+import { explainHostDenial } from "./diagnostics.mjs";
 
 export const MIN_REVIEW_AGY_VERSION = "1.1.15";
 export const STATIC_REVIEW_INSTRUCTION =
@@ -63,6 +64,7 @@ export async function invokeStaticReview({ prompt, model, stdout = process.stdou
     const parsed = parseReviewOutput(result.stdout);
     if (parsed.error || result.status !== 0) {
       stderr.write((parsed.error ?? `agy exited with status ${result.status}.`) + "\n");
+      stderr.write(explainHostDenial(result.stderr));
       return { status: result.status || 1 };
     }
     stdout.write(parsed.answer + "\n");

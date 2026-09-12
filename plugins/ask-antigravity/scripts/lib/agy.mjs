@@ -21,6 +21,7 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 
 import { binaryAvailable, captureCommand, stripAnsi } from "./process.mjs";
+import { explainHostDenial } from "./diagnostics.mjs";
 
 const AGY_BINARY = "agy";
 const CONFIG_DIR = path.join(os.homedir(), ".gemini", "antigravity-cli");
@@ -272,6 +273,7 @@ export async function invokeAntigravity({ prompt, model, write, cwd, isolateWork
       }
       const canSuggestWrite = !isolateWorkspace && !write;
       stderr.write(explainEmptyOutput(result.stderr, { canSuggestWrite }));
+      stderr.write(explainHostDenial(result.stderr));
       return { status: result.status || 1 };
     }
     if (extracted === null && result.stdout) {
@@ -283,6 +285,7 @@ export async function invokeAntigravity({ prompt, model, write, cwd, isolateWork
     if (result.stderr) {
       stderr.write(result.stderr.endsWith("\n") ? result.stderr : result.stderr + "\n");
     }
+    if (result.status !== 0) stderr.write(explainHostDenial(result.stderr));
     return { status: result.status };
   } finally {
     fs.rmSync(promptDir, { recursive: true, force: true });
